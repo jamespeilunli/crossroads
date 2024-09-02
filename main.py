@@ -1,7 +1,12 @@
-from openai import OpenAI
+import os
+from dotenv import load_dotenv
+import openai
 from prompt_toolkit import prompt
 
-client = OpenAI()
+load_dotenv()
+openai.api_key = os.getenv("OPENAI_API_KEY")
+
+client = openai.OpenAI()
 
 def chat_with_gpt(messages):
     response = client.chat.completions.create(
@@ -18,10 +23,12 @@ def main():
         try:
             user_input = prompt('Prompt: ')
             messages.append({"role": "user", "content": user_input})
+            print()
 
             assistant_response = chat_with_gpt(messages)
             print(f"Assistant: {assistant_response}")
             messages.append({"role": "assistant", "content": assistant_response})
+            print()
         except KeyboardInterrupt:
             quit()
 
