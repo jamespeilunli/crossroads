@@ -10,6 +10,7 @@ class CLI:
         self.client = client
         self.paths = [[{"role": "system", "content": "You are a helpful assistant."}], [{"role": "system", "content": "You are a helpful assistant that loves starting words with the letter 'b'."}]]
         self.path_index = 0
+        self.timestamp = 0
 
     def chat_with_gpt(self, messages):
         response = self.client.chat.completions.create(
@@ -37,13 +38,33 @@ class CLI:
             
             self.path_index = new_index
             print(f"Switched to path {self.path_index}")
+        elif command in {"newpath", "new", "n"}:
+            if len(args) == 0:
+                self.paths.append(self.paths[self.path_index][:])
+                old_path_index = self.path_index
+                self.path_index = len(self.paths) - 1
+                print(f"Switched to new path {self.path_index} at latest timestamp of old path {old_path_index}")
+            else:
+                try:
+                    self.timestamp = int(args[0])
+                except ValueError:
+                    print(f"{BOLD}Error:{RESET} {self.timestamp} is not an integer")
+                    return
+                if self.timestamp < 0 or self.timestamp >= len(self.paths[self.path_index]) // 2:
+                    print(f"{BOLD}Error:{RESET} index {self.timestamp} out of bounds")
+                    return
+
+                self.paths.append(self.paths[self.path_index][:2*(self.timestamp+1)])
+                old_path_index = self.path_index
+                self.path_index = len(self.paths) - 1
+                print(f"Switched to new path {self.path_index} at timestamp {self.timestamp} of old path {old_path_index}")
         else:
             print(f"{BOLD}Error:{RESET} Unknown command \"{command}\"")
 
     def run(self):
         while True:
             try:
-                user_input = prompt(f"Path {self.path_index} Prompt: ", style=Style.from_dict({'prompt': 'bold'}))
+                user_input = prompt(f"Path {self.path_index} Time {self.timestamp} Prompt: ", style=Style.from_dict({'prompt': 'bold'}))
                 print()
 
                 if user_input[0] == "/":
@@ -56,5 +77,7 @@ class CLI:
                     print(f"{BOLD}Path {self.path_index} Assistant: {RESET}{assistant_response}")
                     print()
                     self.paths[self.path_index].append({"role": "assistant", "content": assistant_response})
+
+                    self.timestamp += 1
             except KeyboardInterrupt:
                 quit()
