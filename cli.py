@@ -1,18 +1,39 @@
-from prompt_toolkit import prompt
+from prompt_toolkit import PromptSession
 from prompt_toolkit.styles import Style
-from prompt_toolkit.application import get_app
+import os
 
 BOLD = "\x1b[1m"
+RED = "\x1b[31m"
 RESET = "\x1b[0m"
 
 class CLI:
     def __init__(self, client):
         
         self.client = client
+        self.session = PromptSession()
+
         self.paths = [[{"role": "system", "content": "You are a helpful assistant."}], [{"role": "system", "content": "You are a helpful assistant that loves starting words with the letter 'b'."}]]
         self.path_index = 0
         self.timestamp = 0
 
+        self.commands = self.dict_fromkeys_union({
+            ("quit", "q"): lambda args: quit(),
+            ("list_timestamps", "lt"): self._list_timestamps,
+            ("list_paths", "lp"): self._list_paths,
+            ("set_path", "sp"): self._set_path,
+            ("new_path", "np"): self._new_path 
+        })
+
+    def dict_fromkeys_union(self, l):
+        """
+        turns {(keyA1, keyA2): valueA, (keyB1): valueB, ...}
+        into {keyA1: valueA, keyA2: valueA, keyB1: valueB, ...}
+        """
+        ret = {}
+        for keys, value in l.items():
+            ret = {**ret, **dict.fromkeys(keys, value)}
+        return ret
+    
     def chat_with_gpt(self, messages):
         response = self.client.chat.completions.create(
             model="gpt-4o-mini",
@@ -21,33 +42,38 @@ class CLI:
 
         return response.choices[0].message.content
 
-    def get_terminal_width(self):
-        app = get_app()
-        if app.output:
-            return app.output.get_size().columns
-        return 80 # default fallback width
+    def prevent_overflow(self, s):
+        terminal_width, _ = os.get_terminal_size()
+        return s.replace("\n", " ")[:terminal_width]
 
+    def _list_timestamps(self, args):
+        print(f"Timestamps on path {self.path_index}:")
+        for i, message in enumerate(self.paths[self.path_index]):
+            content = message["content"]
+            timestamp = i // 2
+            print(self.prevent_overflow(f"Time {timestamp}: {content}"))
+ 
     def _list_paths(self, args):
         print("Paths:")
         for i, path in enumerate(self.paths):
             content = path[-1]["content"]
             if i == self.path_index:
-                print(BOLD + f"{i} {content}"[:self.get_terminal_width()] + RESET)
+                print(BOLD + self.prevent_overflow(f"Path {i} latest timestamp: {content}") + RESET)
             else:
-                print(f"{i} {content}"[:self.get_terminal_width()])
+                print(self.prevent_overflow(f"Path {i} latest timestamp: {content}"))
             
     def _set_path(self, args):
         try:
             new_index = int(args[0])
         except ValueError:
-            print(f"{BOLD}Error:{RESET} {new_index} is not an integer")
+            print(f"{BOLD+RED}Error:{RESET} {new_index} is not an integer")
             return
         except IndexError:
             print("No arguments passed to set_path. Running list_paths instead.")
             self._list_paths(args)
             return
         if new_index < 0 or new_index >= len(self.paths):
-            print(f"{BOLD}Error:{RESET} index {new_index} out of bounds")
+            print(f"{BOLD+RED}Error:{RESET} index {new_index} out of bounds")
             return
         
         self.path_index = new_index
@@ -63,14 +89,14 @@ class CLI:
             try:
                 timestamp = int(args[0])
             except ValueError:
-                print(f"{BOLD}Error:{RESET} {timestamp} is not an integer")
+                print(f"{BOLD+RED}Error:{RESET} {timestamp} is not an integer")
                 return
-            if timestamp < 0 or timestamp >= len(self.paths[self.path_index]) // 2:
-                print(f"{BOLD}Error:{RESET} timestamp {timestamp} out of bounds")
+            if timestamp < 0 or timestamp > len(self.paths[self.path_index]) // 2:
+                print(f"{BOLD+RED}Error:{RESET} timestamp {timestamp} out of bounds")
                 return
 
             self.timestamp = timestamp
-            self.paths.append(self.paths[self.path_index][:2*(self.timestamp+1)])
+            self.paths.append(self.paths[self.path_index][:2*(self.timestamp)+1])
             old_path_index = self.path_index
             self.path_index = len(self.paths) - 1
             print(f"Switched to new path {self.path_index} at timestamp {self.timestamp} of old path {old_path_index}")
@@ -79,21 +105,15 @@ class CLI:
         parts = user_input[1:].split()
         command = parts[0]
         args = parts[1:]
-        if command in {"quit", "q"}:
-            quit()
-        elif command in {"list_paths", "lp"}:
-            self._list_paths(args)
-        elif command in {"set_path", "sp"}:
-            self._set_path(args)
-        elif command in {"new_path", "np"}:
-            self._new_path(args)
+        if command in self.commands.keys():
+            self.commands[command](args)
         else:
-            print(f"{BOLD}Error:{RESET} Unknown command \"{command}\"")
+            print(f"{BOLD+RED}Error:{RESET} Unknown command \"{command}\"")
 
     def run(self):
         while True:
             try:
-                user_input = prompt(f"Path {self.path_index} Time {self.timestamp} Prompt: ", style=Style.from_dict({'prompt': 'bold'}))
+                user_input = self.session.prompt(f"Path {self.path_index} Time {self.timestamp} Prompt: ", style=Style.from_dict({'prompt': 'bold green'}))
                 print()
 
                 if user_input[0] == "/":
