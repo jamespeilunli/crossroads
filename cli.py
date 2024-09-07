@@ -1,5 +1,7 @@
 from prompt_toolkit import PromptSession
 from prompt_toolkit.styles import Style
+from rich.console import Console
+from rich.markdown import Markdown
 import os
 
 BOLD = "\x1b[1m"
@@ -111,6 +113,8 @@ class CLI:
             print(f"{BOLD+RED}Error:{RESET} Unknown command \"{command}\"")
 
     def run(self):
+        rich_console = Console()
+        
         while True:
             try:
                 user_input = self.session.prompt(f"Path {self.path_index} Time {self.timestamp} Prompt: ", style=Style.from_dict({'prompt': 'bold green'}))
@@ -123,7 +127,8 @@ class CLI:
                     self.paths[self.path_index].append({"role": "user", "content": user_input})
 
                     assistant_response = self.chat_with_gpt(self.paths[self.path_index])
-                    print(f"{BOLD}Path {self.path_index} Assistant: {RESET}{assistant_response}")
+                    print(f"{BOLD}Path {self.path_index} Assistant: {RESET}", end="")
+                    rich_console.print(Markdown(assistant_response))
                     print()
                     self.paths[self.path_index].append({"role": "assistant", "content": assistant_response})
 
