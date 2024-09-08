@@ -12,6 +12,10 @@ Write a .env with your OpenAI API key in it:
 ```
 OPENAI_API_KEY=sk-proj-XXXXXXXXXXXXXXXXXXXXXXX
 ```
+Go to the `cli` directory:
+```bash
+cd cli
+```
 
 ### Run with a virtual environment (recommended)
 
