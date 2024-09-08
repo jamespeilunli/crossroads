@@ -12,18 +12,14 @@ Write a .env with your OpenAI API key in it:
 ```
 OPENAI_API_KEY=sk-proj-XXXXXXXXXXXXXXXXXXXXXXX
 ```
-Go to the `cli` directory:
-```bash
-cd cli
-```
 
 ### Run with a virtual environment (recommended)
 
 ```bash
 python -m venv venv
 source ./venv/bin/activate
-pip install -r requirements.txt
-python main.py
+pip install -r cli/requirements.txt
+python -m cli.main
 ```
 Use Ctrl+C to quit the program.
 

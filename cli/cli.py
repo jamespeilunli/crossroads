@@ -2,7 +2,7 @@ from prompt_toolkit import PromptSession
 from prompt_toolkit.styles import Style
 from rich.console import Console
 from rich.markdown import Markdown
-import heading_override
+import cli.heading_override
 import os
 
 BOLD = "\x1b[1m"
@@ -10,9 +10,9 @@ RED = "\x1b[31m"
 RESET = "\x1b[0m"
 
 class CLI:
-    def __init__(self, client):
+    def __init__(self, crossroads):
         
-        self.client = client
+        self.crossroads = crossroads
         self.session = PromptSession()
 
         self.paths = [[{"role": "system", "content": "You are a helpful assistant."}], [{"role": "system", "content": "You are a helpful assistant that loves starting words with the letter 'b'."}]]
@@ -37,14 +37,6 @@ class CLI:
             ret = {**ret, **dict.fromkeys(keys, value)}
         return ret
     
-    def chat_with_gpt(self, messages):
-        response = self.client.chat.completions.create(
-            model="gpt-4o-mini",
-            messages=messages
-        )
-
-        return response.choices[0].message.content
-
     def prevent_overflow(self, s):
         terminal_width, _ = os.get_terminal_size()
         return s.replace("\n", " ")[:terminal_width]
@@ -129,7 +121,7 @@ class CLI:
                 else:
                     self.paths[self.path_index].append({"role": "user", "content": user_input})
 
-                    assistant_response = self.chat_with_gpt(self.paths[self.path_index])
+                    assistant_response = self.crossroads.get_response(self.paths[self.path_index])
                     print(f"{BOLD}Path {self.path_index} Assistant: {RESET}")
                     rich_console.print(Markdown(assistant_response))
                     print()

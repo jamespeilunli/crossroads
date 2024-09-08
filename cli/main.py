@@ -1,14 +1,11 @@
 import os
 from dotenv import load_dotenv
 import openai
+from lib.crossroads import Crossroads
 
-from cli import CLI
+from cli.cli import CLI
 
-load_dotenv()
-openai.api_key = os.getenv("OPENAI_API_KEY")
-
-client = openai.OpenAI()
-
-cli = CLI(client)
+crossroads = Crossroads()
+cli = CLI(crossroads)
 cli.run()
 
