@@ -50,7 +50,7 @@ class CLI:
         print(f"Timestamps on path {self.path_index}:")
         for i, message in enumerate(self.paths[self.path_index]):
             content = message["content"]
-            timestamp = i // 2
+            timestamp = (i + 1) // 2
             print(self.prevent_overflow(f"Time {timestamp}: {content}"))
  
     def _list_paths(self, args):
@@ -100,6 +100,8 @@ class CLI:
             old_path_index = self.path_index
             self.path_index = len(self.paths) - 1
             print(f"Switched to new path {self.path_index} at timestamp {self.timestamp} of old path {old_path_index}")
+        
+        print(self.prevent_overflow(f"Last message: {self.paths[self.path_index][-1]['content']}"))
 
     def process_command(self, user_input):
         parts = user_input[1:].split()
