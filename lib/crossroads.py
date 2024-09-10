@@ -1,10 +1,8 @@
-
 import os
 from dotenv import load_dotenv
 import openai
 
 class OpenAIHandle:
-    
     def __init__(self):
         load_dotenv()
         openai.api_key = os.getenv("OPENAI_API_KEY")
@@ -18,7 +16,6 @@ class OpenAIHandle:
         )
         return response.choices[0].message.content       
         
-
 class Crossroads:
     def __init__(self):
         self.openai_handle = OpenAIHandle()
