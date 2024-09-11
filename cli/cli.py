@@ -14,6 +14,7 @@ class CLI:
         
         self.crossroads = crossroads
         self.session = PromptSession()
+        self.rich_console = Console()
 
         self.paths = [[{"role": "system", "content": "You are a helpful assistant."}], [{"role": "system", "content": "You are a helpful assistant that loves starting words with the letter 'b'."}]]
         self.path_index = 0
@@ -107,9 +108,18 @@ class CLI:
         else:
             print(f"{BOLD+RED}Error:{RESET} Unknown command \"{command}\"")
 
+    def respond(self):
+        print(f"{BOLD}Path {self.path_index} Assistant: {RESET}")
+        full_response = ""
+        for message_chunk in self.crossroads.get_response(self.paths[self.path_index]):
+            print(message_chunk, end="", flush=True)
+            full_response += message_chunk
+        #self.rich_console.print(Markdown(assistant_response))
+        print("\n")
+
+        return full_response
+
     def run(self):
-        rich_console = Console()
-        
         while True:
             try:
                 user_input = self.session.prompt(f"Path {self.path_index} Time {self.timestamp} Prompt: ", style=Style.from_dict({'prompt': 'bold green'}))
@@ -120,11 +130,7 @@ class CLI:
                     print()
                 else:
                     self.paths[self.path_index].append({"role": "user", "content": user_input})
-
-                    assistant_response = self.crossroads.get_response(self.paths[self.path_index])
-                    print(f"{BOLD}Path {self.path_index} Assistant: {RESET}")
-                    rich_console.print(Markdown(assistant_response))
-                    print()
+                    assistant_response = self.respond()
                     self.paths[self.path_index].append({"role": "assistant", "content": assistant_response})
 
                     self.timestamp += 1

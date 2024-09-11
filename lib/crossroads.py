@@ -10,12 +10,20 @@ class OpenAIHandle:
         self.client = openai.OpenAI()
     
     def get_response(self, messages):
+        """
+        get the response of the LLM as a stream
+        """
         response = self.client.chat.completions.create(
-            model="gpt-4o-mini",
-            messages=messages
+            model='gpt-4o-mini',
+            messages=messages,
+            stream=True
         )
-        return response.choices[0].message.content       
-        
+
+        for chunk in response:
+            message_chunk = chunk.choices[0].delta.content
+            if message_chunk is not None:
+                yield message_chunk
+
 class Crossroads:
     def __init__(self):
         self.openai_handle = OpenAIHandle()
