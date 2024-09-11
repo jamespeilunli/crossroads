@@ -2,6 +2,7 @@ from prompt_toolkit import PromptSession
 from prompt_toolkit.styles import Style
 from rich.console import Console
 from rich.markdown import Markdown
+from rich.live import Live
 import cli.heading_override
 import os
 
@@ -110,14 +111,19 @@ class CLI:
 
     def respond(self):
         print(f"{BOLD}Path {self.path_index} Assistant: {RESET}")
-        full_response = ""
-        for message_chunk in self.crossroads.get_response(self.paths[self.path_index]):
-            print(message_chunk, end="", flush=True)
-            full_response += message_chunk
-        #self.rich_console.print(Markdown(assistant_response))
-        print("\n")
 
-        return full_response
+        accumulated_markdown = ""
+
+        with Live(console=self.rich_console, refresh_per_second=60) as live:
+            for message_chunk in self.crossroads.get_response(self.paths[self.path_index]):
+                accumulated_markdown += f"{message_chunk}"
+                markdown = Markdown(accumulated_markdown)
+                
+                live.update(markdown)
+
+        print()
+
+        return accumulated_markdown
 
     def run(self):
         while True:
