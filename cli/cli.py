@@ -2,6 +2,7 @@ from prompt_toolkit import PromptSession
 from prompt_toolkit.styles import Style
 from rich.console import Console
 from rich.markdown import Markdown
+from rich.live import Live
 import cli.heading_override
 import os
 
@@ -14,6 +15,7 @@ class CLI:
         
         self.crossroads = crossroads
         self.session = PromptSession()
+        self.rich_console = Console()
 
         self.paths = [[{"role": "system", "content": "You are a helpful assistant."}], [{"role": "system", "content": "You are a helpful assistant that loves starting words with the letter 'b'."}]]
         self.path_index = 0
@@ -107,9 +109,23 @@ class CLI:
         else:
             print(f"{BOLD+RED}Error:{RESET} Unknown command \"{command}\"")
 
+    def respond(self):
+        print(f"{BOLD}Path {self.path_index} Assistant: {RESET}")
+
+        accumulated_markdown = ""
+
+        with Live(console=self.rich_console, refresh_per_second=60) as live:
+            for message_chunk in self.crossroads.get_response(self.paths[self.path_index]):
+                accumulated_markdown += f"{message_chunk}"
+                markdown = Markdown(accumulated_markdown)
+                
+                live.update(markdown)
+
+        print()
+
+        return accumulated_markdown
+
     def run(self):
-        rich_console = Console()
-        
         while True:
             try:
                 user_input = self.session.prompt(f"Path {self.path_index} Time {self.timestamp} Prompt: ", style=Style.from_dict({'prompt': 'bold green'}))
@@ -120,11 +136,7 @@ class CLI:
                     print()
                 else:
                     self.paths[self.path_index].append({"role": "user", "content": user_input})
-
-                    assistant_response = self.crossroads.get_response(self.paths[self.path_index])
-                    print(f"{BOLD}Path {self.path_index} Assistant: {RESET}")
-                    rich_console.print(Markdown(assistant_response))
-                    print()
+                    assistant_response = self.respond()
                     self.paths[self.path_index].append({"role": "assistant", "content": assistant_response})
 
                     self.timestamp += 1
