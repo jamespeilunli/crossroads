@@ -154,4 +154,6 @@ class CLI:
 
                     self.timestamp += 1
             except KeyboardInterrupt:
+                pass
+            except EOFError:
                 quit()
