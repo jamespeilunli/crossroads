@@ -76,6 +76,7 @@ class CLI:
         
         self.path_index = new_index
         print(f"Switched to path {self.path_index}")
+        print(self.prevent_overflow(f"Last message: {self.paths[self.path_index][-1]['content']}"))
 
     def _new_path(self, args):
         if len(args) == 0:
