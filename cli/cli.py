@@ -23,10 +23,11 @@ class CLI:
 
         self.commands = self.dict_fromkeys_union({
             ("quit", "q"): lambda args: quit(),
-            ("list_timestamps", "lt"): self._list_timestamps,
+            ("list_timestamps", "list_times", "lt"): self._list_timestamps,
             ("list_paths", "lp"): self._list_paths,
             ("set_path", "sp"): self._set_path,
-            ("new_path", "np"): self._new_path 
+            ("new_path", "np"): self._new_path,
+            ("last_message", "last", "lm"): self._last_message,
         })
 
     def dict_fromkeys_union(self, l):
@@ -55,9 +56,9 @@ class CLI:
         for i, path in enumerate(self.paths):
             content = path[-1]["content"]
             if i == self.path_index:
-                print(BOLD + self.prevent_overflow(f"Path {i} latest timestamp: {content}") + RESET)
+                print(BOLD + self.prevent_overflow(f"Path {i} last timestamp: {content}") + RESET)
             else:
-                print(self.prevent_overflow(f"Path {i} latest timestamp: {content}"))
+                print(self.prevent_overflow(f"Path {i} last timestamp: {content}"))
             
     def _set_path(self, args):
         try:
@@ -81,7 +82,7 @@ class CLI:
             self.paths.append(self.paths[self.path_index][:])
             old_path_index = self.path_index
             self.path_index = len(self.paths) - 1
-            print(f"Switched to new path {self.path_index} at latest timestamp of old path {old_path_index}")
+            print(f"Switched to new path {self.path_index} at last timestamp of old path {old_path_index}")
         else:
             try:
                 timestamp = int(args[0])
@@ -99,6 +100,17 @@ class CLI:
             print(f"Switched to new path {self.path_index} at timestamp {self.timestamp} of old path {old_path_index}")
         
         print(self.prevent_overflow(f"Last message: {self.paths[self.path_index][-1]['content']}"))
+    
+    def _last_message(self, args):
+        if self.timestamp == 0:
+            # maybe i should add functionality with the system prompt... (see issue #1?)
+            print(f"{BOLD+RED}Error:{RESET} no last message at timestamp 0")
+            return
+        
+        print(f"{BOLD}Path {self.path_index} Time {self.timestamp - 1} Assistant: {RESET}")
+
+        message = self.paths[self.path_index][-1]["content"]
+        self.rich_console.print(Markdown(message))
 
     def process_command(self, user_input):
         parts = user_input[1:].split()
@@ -110,7 +122,7 @@ class CLI:
             print(f"{BOLD+RED}Error:{RESET} Unknown command \"{command}\"")
 
     def respond(self):
-        print(f"{BOLD}Path {self.path_index} Assistant: {RESET}")
+        print(f"{BOLD}Path {self.path_index} Time {self.timestamp} Assistant: {RESET}")
 
         accumulated_markdown = ""
 

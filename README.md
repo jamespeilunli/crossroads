@@ -40,3 +40,4 @@ Instead of prompting the chatbot, you can also run commands, which are always pr
 * `/list_paths`
 * `/set_path i` (changes the current path to path `i`)
 * `/new_path i` (creates a new path at timestamp `i` and sets the current path to it)
+* `/last` (prints the latest assistant message in the path)
