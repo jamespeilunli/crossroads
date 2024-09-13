@@ -21,7 +21,7 @@ source ./venv/bin/activate
 pip install -r cli/requirements.txt
 python -m cli.main
 ```
-Use Ctrl+C to quit the program.
+Use Ctrl+D to quit the program.
 
 Leave the virtual environment:
 ```bash
