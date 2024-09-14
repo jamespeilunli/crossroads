@@ -6,22 +6,11 @@ app = Flask(__name__)
 def index():
     return render_template('index.html')
 
-@app.route('/api/add')
-def data():
-    a = int(request.args.get('a'))
-    b = int(request.args.get('b'))
-
-    response = jsonify({
-        "received": {
-            "a": a,
-            "b": b,
-        },
-        "message": f"{a} + {b} = {a + b}",
-        "result": a + b,
-    })
-    response.status_code = 200
-
-    return response
+@app.route('/api/get_response', methods=["POST"])
+def process_array():
+    data = request.get_json()
+    messages = data["messages"]
+    return jsonify({"result": messages})
 
 if __name__ == '__main__':
     app.run(debug=True, use_reloader=True)
