@@ -13,4 +13,17 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     someAsyncFunction();
+
+    async function anotherAsyncFunction() {
+
+        const jsonResponse = await fetch("/api/list_models", {
+            method: "GET",
+        })
+            .then((response) => response.json())
+            .then((json) => {
+                console.log(json);
+                return json;
+            });
+    }
+    anotherAsyncFunction()
 });
