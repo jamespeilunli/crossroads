@@ -2,7 +2,7 @@
 
 ChatGPT-powered chatbot supporting multiple conversation paths
 
-Very WIP. Currently has just a Python CLI.
+Very WIP.
 
 ## Running the CLI
 
