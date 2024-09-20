@@ -10,16 +10,16 @@ document.addEventListener("DOMContentLoaded", async function () {
     }
 
     try {
-    const jsonResponse = await fetch("/api/list_models", {
-        method: "GET",
-    })
-        .then((response) => response.json())
-        .then((json) => {
-            console.log("/api/list_models Success", json);
-            return json;
-        });
+        const jsonResponse = await fetch("/api/list_models", {
+            method: "GET",
+        })
+            .then((response) => response.json())
+            .then((json) => {
+                console.log("/api/list_models Success", json);
+                return json;
+            });
 
-    document.getElementById("content").innerHTML += `<p>Availiable Models: ${JSON.stringify(jsonResponse.result)}</p>`;
+        document.getElementById("content").innerHTML += `<p>Availiable Models: ${JSON.stringify(jsonResponse.result)}</p>`;
     } catch (error) {
         console.error("Error:", error);
     }
