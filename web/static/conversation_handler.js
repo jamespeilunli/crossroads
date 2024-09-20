@@ -1,11 +1,9 @@
 class ConversationHandler {
     constructor() {
-        console.log("hello");
         this.paths = [[{ "role": "system", "content": "You are a helpful assistant." }], [{ "role": "system", "content": "You are a helpful assistant that loves starting words with the letter 'b'." }]];
     }
 
     respond() {
-
         return fetch("/api/get_response", {
             method: "POST",
             body: JSON.stringify({
@@ -17,9 +15,8 @@ class ConversationHandler {
         })
             .then((response) => response.json())
             .then((json) => {
-                console.log(json);
+                console.log("/api/get_response Success", json);
                 return json;
             });
-
     }
 }
