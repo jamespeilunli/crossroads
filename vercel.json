@@ -12,9 +12,7 @@
       "dest": "web/app.py"
     }
   ],
-  "functions": {
-    "web/app.py": {
-      "includeFiles": "lib/**"
-    }
+  "env": {
+    "PYTHONPATH": "."
   }
 }
