@@ -1,3 +1,6 @@
+document.querySelector('.btn').addEventListener('click', () => {
+    alert('Button clicked!');
+});
 document.addEventListener("DOMContentLoaded", () => {
     const handler = new ConversationHandler();
 
