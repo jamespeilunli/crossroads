@@ -10,5 +10,6 @@
       "src": "/(.*)",
       "dest": "web/app.py"
     }
-  ]
+  ],
+  "buildCommand": "cd web && npm run build"
 }
