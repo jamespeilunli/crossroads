@@ -1,9 +1,12 @@
 {
-  "version": 2,
   "builds": [
     {
       "src": "web/app.py",
       "use": "@vercel/python"
+    },
+    {
+      "src": "web/static/styles/index.css",
+      "use": "@vercel/static"
     }
   ],
   "routes": [
@@ -11,8 +14,5 @@
       "src": "/(.*)",
       "dest": "web/app.py"
     }
-  ],
-  "env": {
-    "PYTHONPATH": "."
-  }
+  ]
 }
