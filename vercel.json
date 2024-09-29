@@ -7,6 +7,10 @@
     {
       "src": "web/static/styles/index.css",
       "use": "@vercel/static"
+    },
+    {
+      "src": "web/static/styles/tailwind.css",
+      "use": "@vercel/static"
     }
   ],
   "routes": [
