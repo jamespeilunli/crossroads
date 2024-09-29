@@ -10,7 +10,5 @@
       "src": "/(.*)",
       "dest": "web/app.py"
     }
-  ],
-  "installCommand": "cd web && npm install && pip3 install -r requirements.txt",
-  "buildCommand": "cd web && npm run build"
+  ]
 }
