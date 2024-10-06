@@ -7,8 +7,7 @@
     },
     {
       "src": "web/package.json",
-      "use": "@vercel/node",
-      "buildCommand": "npm run build"
+      "use": "@vercel/node"
     }
   ],
   "routes": [
@@ -19,5 +18,6 @@
   ],
   "env": {
     "PYTHONPATH": "."
-  }
+  },
+  "buildCommand": "npm run build"
 }
