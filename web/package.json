@@ -4,7 +4,7 @@
     "start": "python3 app.py"
   },
   "dependencies": {
-    "tailwindcss": "^3.0.0",
-    "daisyui": "^2.0.0"
+    "daisyui": "^2.52.0",
+    "tailwindcss": "^3.0.0"
   }
 }
