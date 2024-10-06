@@ -1,7 +1,7 @@
 {
   "scripts": {
     "build": "npx tailwindcss -i ./static/styles/index.css -o ./static/styles/tailwind.css",
-    "start": "python3 app.py"
+    "start": "cd .. && python3 -m web.app"
   },
   "dependencies": {
     "daisyui": "^2.52.0",

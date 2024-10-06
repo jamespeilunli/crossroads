@@ -1,12 +1,5 @@
 {
-  "routes": [
-    {
-      "src": "/static/(.*)",
-      "dest": "/web/$1"
-    },
-    {
-      "src": "/(.*)",
-      "dest": "web/app.py"
-    }
+  "rewrites": [
+    { "source": "/(.*)", "destination": "/web/app" }
   ]
 }
