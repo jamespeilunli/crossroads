@@ -3,11 +3,15 @@ from dotenv import load_dotenv
 import openai
 
 class OpenAIHandle:
-    def __init__(self):
-        load_dotenv()
-        openai.api_key = os.getenv("OPENAI_API_KEY")
+    def __init__(self, api_key=-1):
+        if api_key == -1:
+            load_dotenv()
+            self.client = openai.OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
+        else:
+            print(openai.api_key)
+            self.client = openai.OpenAI(api_key=api_key)
 
-        self.client = openai.OpenAI()
+        print(self.client)
     
     def get_response(self, messages):
         """
@@ -34,8 +38,8 @@ class OpenAIHandle:
         return model_list
 
 class Crossroads:
-    def __init__(self):
-        self.openai_handle = OpenAIHandle()
+    def __init__(self, api_key=-1):
+        self.openai_handle = OpenAIHandle(api_key)
 
     def get_response(self, messages):
         return self.openai_handle.get_response(messages)
