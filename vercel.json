@@ -4,6 +4,10 @@
     {
       "src": "web/app.py",
       "use": "@vercel/python"
+    },
+    {
+      "src": "web/package.json",
+      "use": "@vercel/node"
     }
   ],
   "routes": [
@@ -14,5 +18,6 @@
   ],
   "env": {
     "PYTHONPATH": "."
-  }
+  },
+  "buildCommand": "echo HELLO && cd web && npm run build"
 }

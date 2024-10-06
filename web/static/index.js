@@ -1,26 +1,37 @@
-document.addEventListener("DOMContentLoaded", async function () {
+document.querySelector('.btn').addEventListener('click', () => {
+    alert('Button clicked!');
+});
+
+
+/*
+document.addEventListener("DOMContentLoaded", () => {
     const handler = new ConversationHandler();
 
+    async function someAsyncFunction() {
     try {
         const jsonResponse = await handler.respond();
-
-        document.getElementById("content").innerHTML += `<p>Current Messages: ${JSON.stringify(jsonResponse.result)}</p>`;
+        console.log("Received JSON:", jsonResponse);
+        document.getElementById("content").innerText = JSON.stringify(jsonResponse.result);
+        // Do something with the JSON data here
     } catch (error) {
         console.error("Error:", error);
     }
+    }
 
-    try {
+    someAsyncFunction();
+
+    async function anotherAsyncFunction() {
+
         const jsonResponse = await fetch("/api/list_models", {
             method: "GET",
         })
             .then((response) => response.json())
             .then((json) => {
-                console.log("/api/list_models Success", json);
+                console.log(json);
                 return json;
             });
-
-        document.getElementById("content").innerHTML += `<p>Availiable Models: ${JSON.stringify(jsonResponse.result)}</p>`;
-    } catch (error) {
-        console.error("Error:", error);
     }
+    anotherAsyncFunction()
 });
+
+*/

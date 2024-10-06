@@ -41,3 +41,24 @@ Instead of prompting the chatbot, you can also run commands, which are always pr
 * `/set_path i` (changes the current path to path `i`)
 * `/new_path i` (creates a new path at timestamp `i` and sets the current path to it)
 * `/last` (prints the latest assistant message in the path)
+
+## Running the web app locally
+
+Compile:
+```bash
+cd web
+npx tailwindcss -i static/styles/* -o static/styles/tailwind.css # use --watch to dynamically update
+cd .. # go back to root of repo
+```
+
+Install dependencies:
+```bash
+python -m venv venv
+source ./venv/bin/activate
+pip install -r web/requirements.txt
+```
+
+Start local server:
+```bash
+python3 -m web.app
+```
