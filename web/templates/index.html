@@ -15,6 +15,14 @@
 <body>
     <h1>Hello, world!</h1>
     <p id="content"></p>
+
+    {% if not session['api_key'] %}
+    <form id="api-key-form">
+        <label for="api-key">OpenAI API Key:</label>
+        <input type="password" id="api-key" required>
+        <button type="submit">Submit</button>
+    </form>
+    {% endif %}
 </body>
 
 </html>
