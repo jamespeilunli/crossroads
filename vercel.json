@@ -19,5 +19,5 @@
   "env": {
     "PYTHONPATH": "."
   },
-  "buildCommand": "npm run build"
+  "buildCommand": "echo HELLO && cd web && npm run build"
 }
