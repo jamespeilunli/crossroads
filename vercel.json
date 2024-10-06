@@ -1,5 +1,22 @@
 {
-  "rewrites": [
-    { "source": "/(.*)", "destination": "/web/app" }
-  ]
+  "version": 2,
+  "builds": [
+    {
+      "src": "web/app.py",
+      "use": "@vercel/python"
+    },
+    {
+      "src": "web/package.json",
+      "use": "@vercel/node"
+    }
+  ],
+  "routes": [
+    {
+      "src": "/(.*)",
+      "dest": "web/app.py"
+    }
+  ],
+  "env": {
+    "PYTHONPATH": "."
+  }
 }
